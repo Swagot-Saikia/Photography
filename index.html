@@ -687,10 +687,7 @@
 <section class="hero" id="home">
   <div class="hero-bg"></div>
   <div class="hero-image-frame">
-    <div class="placeholder-img" style="height:100%; --ratio:0%;">
-      <div class="gradient-fill"></div>
-    </div>
-    <!-- Replace above with: <img src="YOUR_HERO_IMAGE_URL" alt="Hero"> -->
+    <img src="https://lh3.googleusercontent.com/pw/AP1GczM_SMFMklonh_91_mrXtGB-da5hO0YYiPzlCnCb27UxrqXSEd5W0RpVncHR6ZI4kn9O23HY1bn6_uvuG0XGBnx1mT90l7awxSy29KShmXVlI4skEPI=w1920-h1080-no" alt="Hero — Swagot Photography">
   </div>
   <div class="hero-content">
     <p class="hero-eyebrow">Photography Portfolio</p>
@@ -748,10 +745,9 @@
   </div>
 
   <div class="gallery-grid" id="galleryGrid">
-    <!-- LANDSCAPE -->
+    <!-- REAL PHOTO -->
     <div class="gallery-item" data-category="landscape" onclick="openLightbox(this)">
-      <div class="placeholder-img" style="--ratio: 130%;"><div class="gradient-fill"></div></div>
-      <!-- Replace with: <img src="YOUR_URL" alt=""> -->
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczM_SMFMklonh_91_mrXtGB-da5hO0YYiPzlCnCb27UxrqXSEd5W0RpVncHR6ZI4kn9O23HY1bn6_uvuG0XGBnx1mT90l7awxSy29KShmXVlI4skEPI=w800-h600-no" alt="Golden Hour, Hills">
       <div class="gallery-item-overlay">
         <div class="gallery-item-info">
           <div class="gallery-item-title">Golden Hour, Hills</div>
@@ -759,6 +755,8 @@
         </div>
       </div>
     </div>
+
+    <!-- PLACEHOLDERS -->
     <div class="gallery-item" data-category="street" onclick="openLightbox(this)">
       <div class="placeholder-img" style="--ratio: 75%;"><div class="gradient-fill"></div></div>
       <div class="gallery-item-overlay">
@@ -966,7 +964,13 @@
     const img = el.querySelector('img');
     const title = el.querySelector('.gallery-item-title')?.textContent || '';
     if (img) {
-      content.innerHTML = `<img src="${img.src}" alt="${title}">`;
+      content.innerHTML = '';
+      content.style.cssText = '';
+      const lightImg = document.createElement('img');
+      // Use full resolution for lightbox
+      lightImg.src = img.src.replace(/=w\d+-h\d+-no/, '=w1920-h1080-no');
+      lightImg.alt = title;
+      content.appendChild(lightImg);
     } else {
       content.textContent = title ? title.toUpperCase() : 'ADD PHOTO HERE';
       content.style.cssText = 'width:70vw;height:70vh;background:var(--coal);display:flex;align-items:center;justify-content:center;font-family:"Space Mono",monospace;font-size:0.65rem;letter-spacing:0.3em;color:var(--fog);';
