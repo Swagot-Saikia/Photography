@@ -80,7 +80,8 @@
   .about-image { position: relative; }
   .about-image-frame { width: 100%; aspect-ratio: 3/4; background: var(--coal); position: relative; overflow: hidden; }
   .about-image-frame .gradient-fill { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 30%, rgba(139,106,58,0.1) 0%, transparent 70%), linear-gradient(to bottom, var(--ash), var(--coal)); }
-  .about-image-frame::after { content: 'YOUR PORTRAIT'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: 'Space Mono', monospace; font-size: 0.55rem; letter-spacing: 0.3em; color: var(--fog); }
+  .about-image-frame img { width: 100%; height: 100%; object-fit: cover; object-position: center top; display: block; filter: contrast(1.05) saturate(0.92); transition: transform 0.6s ease; }
+  .about-image:hover .about-image-frame img { transform: scale(1.03); }
   .about-image::before { content: ''; position: absolute; top: 20px; left: -20px; right: 20px; bottom: -20px; border: 1px solid var(--ash); z-index: -1; }
   .about-text p { font-size: 1.15rem; font-weight: 300; line-height: 1.9; color: var(--light); margin-bottom: 24px; }
   .about-text p em { color: var(--accent); font-style: italic; }
@@ -163,6 +164,7 @@
   <ul class="nav-links">
     <li><a href="#gallery">Work</a></li>
     <li><a href="#about">About</a></li>
+    <li><a href="#gear">Gear</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
 </nav>
@@ -423,7 +425,9 @@
 <section class="about" id="about">
   <div class="about-inner">
     <div class="about-image reveal">
-      <div class="about-image-frame"><div class="gradient-fill"></div></div>
+      <div class="about-image-frame">
+        <img src="https://lh3.googleusercontent.com/pw/AP1GczMVSPcxst_ifQzhKsqOXY0XI3ep6kEcMZMxoMnpXsPVvVMitdbPMpjPPNuANww-p9KDUx5C6ImMRDkj5E18Ydv9zwYKE6eTRdX9S10rnAb-ZrchfmE=w800-h800-no" alt="Swagot">
+      </div>
     </div>
     <div class="about-text reveal">
       <p class="section-label">About</p>
@@ -440,15 +444,39 @@
   </div>
 </section>
 
+<section class="gear" id="gear">
+  <p class="section-label reveal">Equipment</p>
+  <h2 class="section-title reveal">The Kit</h2>
+  <div class="gear-list reveal">
+    <div class="gear-item">
+      <div class="gear-icon">📷</div>
+      <div class="gear-name">Canon EOS 1500D</div>
+      <p class="gear-detail">24.1MP APS-C sensor. Entry-level body, uncompromising output.</p>
+    </div>
+    <div class="gear-item">
+      <div class="gear-icon">🔭</div>
+      <div class="gear-name">EF-S 18-55mm f/3.5-5.6</div>
+      <p class="gear-detail">Kit lens pushed to its limits. Versatile across every genre I shoot.</p>
+    </div>
+    <div class="gear-item">
+      <div class="gear-icon">⚙️</div>
+      <div class="gear-name">Post: Lightroom / Darktable</div>
+      <p class="gear-detail">Dark, contrasty edits. No over-processing. The shot does the work.</p>
+    </div>
+  </div>
+</section>
 
 <section class="contact" id="contact">
   <div class="contact-inner">
     <p class="section-label reveal">Get In Touch</p>
     <h2 class="section-title reveal">Let's Work</h2>
     <p class="contact-text reveal">Collaborations, commissions, or just someone who wants to talk about light and shadow — I'm open to all of it.</p>
+    <a href="/cdn-cgi/l/email-protection#10697f656250757d71797c3e737f7d" class="contact-email reveal"><span class="__cf_email__" data-cfemail="4b12041e190b0e060a020765080406">[email&#160;protected]</span></a>
     <div class="contact-socials reveal">
-      <a href="https://www.linkedin.com/in/swagot-saikia-4441303b4/" class="social-link">LinkedIn</a>
-      <a href="exceptionalstudio211@gmail.com" class="social-link">EMail</a>
+      <a href="#" class="social-link">Instagram</a>
+      <a href="#" class="social-link">Behance</a>
+      <a href="#" class="social-link">LinkedIn</a>
+      <a href="#" class="social-link">500px</a>
     </div>
   </div>
 </section>
@@ -473,7 +501,7 @@
   <div class="lightbox-counter" id="lightboxCounter"></div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
   // Custom cursor
   const cursor = document.getElementById('cursor');
   const ring = document.getElementById('cursorRing');
@@ -546,12 +574,4 @@
   });
 
   document.addEventListener('keydown', e => {
-    const lb = document.getElementById('lightbox');
-    if (!lb.classList.contains('open')) return;
-    if (e.key === 'Escape') closeLightbox();
-    if (e.key === 'ArrowRight') navigateLightbox(1);
-    if (e.key === 'ArrowLeft') navigateLightbox(-1);
-  });
-</script>
-</body>
-</html>
+    const lb = document.getElementById('lightbox')
