@@ -7,658 +7,144 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Bebas+Neue&family=Space+Mono:wght@400&display=swap" rel="stylesheet">
-
 <style>
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
   :root {
-    --black: #080808;
-    --deep: #0d0d0d;
-    --coal: #141414;
-    --ash: #1e1e1e;
-    --fog: #2a2a2a;
-    --mist: #444;
-    --silver: #888;
-    --light: #bbb;
-    --white: #f0ede8;
-    --accent: #c8a96e;
-    --accent2: #8b6a3a;
+    --black: #080808; --deep: #0d0d0d; --coal: #141414; --ash: #1e1e1e;
+    --fog: #2a2a2a; --mist: #444; --silver: #888; --light: #bbb;
+    --white: #f0ede8; --accent: #c8a96e; --accent2: #8b6a3a;
   }
-
   html { scroll-behavior: smooth; }
+  body { background: var(--black); color: var(--white); font-family: 'Cormorant Garamond', serif; cursor: none; overflow-x: hidden; }
 
-  body {
-    background: var(--black);
-    color: var(--white);
-    font-family: 'Cormorant Garamond', serif;
-    cursor: none;
-    overflow-x: hidden;
-  }
+  .cursor { position: fixed; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; pointer-events: none; z-index: 9999; transform: translate(-50%,-50%); transition: transform 0.1s ease; }
+  .cursor-ring { position: fixed; width: 36px; height: 36px; border: 1px solid rgba(200,169,110,0.4); border-radius: 50%; pointer-events: none; z-index: 9998; transform: translate(-50%,-50%); transition: all 0.18s ease; }
+  body:has(a:hover) .cursor-ring, body:has(.gallery-item:hover) .cursor-ring { width: 60px; height: 60px; border-color: var(--accent); }
 
-  /* CUSTOM CURSOR */
-  .cursor {
-    position: fixed;
-    width: 8px; height: 8px;
-    background: var(--accent);
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 9999;
-    transform: translate(-50%, -50%);
-    transition: transform 0.1s ease;
-  }
-  .cursor-ring {
-    position: fixed;
-    width: 36px; height: 36px;
-    border: 1px solid rgba(200, 169, 110, 0.4);
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 9998;
-    transform: translate(-50%, -50%);
-    transition: all 0.18s ease;
-  }
-  body:has(a:hover) .cursor-ring,
-  body:has(.gallery-item:hover) .cursor-ring {
-    width: 60px; height: 60px;
-    border-color: var(--accent);
-  }
+  body::before { content: ''; position: fixed; inset: 0; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E"); pointer-events: none; z-index: 100; opacity: 0.35; }
 
-  /* NOISE OVERLAY */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 100;
-    opacity: 0.35;
-  }
-
-  /* NAV */
-  nav {
-    position: fixed;
-    top: 0; left: 0; right: 0;
-    z-index: 500;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 28px 48px;
-    background: linear-gradient(to bottom, rgba(8,8,8,0.95) 0%, transparent 100%);
-  }
-  .nav-logo {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.4rem;
-    letter-spacing: 0.2em;
-    color: var(--white);
-    text-decoration: none;
-  }
+  nav { position: fixed; top: 0; left: 0; right: 0; z-index: 500; display: flex; align-items: center; justify-content: space-between; padding: 28px 48px; background: linear-gradient(to bottom, rgba(8,8,8,0.95) 0%, transparent 100%); }
+  .nav-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; letter-spacing: 0.2em; color: var(--white); text-decoration: none; }
   .nav-logo span { color: var(--accent); }
-  .nav-links {
-    display: flex;
-    gap: 40px;
-    list-style: none;
-  }
-  .nav-links a {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.65rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--silver);
-    text-decoration: none;
-    transition: color 0.3s ease;
-  }
+  .nav-links { display: flex; gap: 40px; list-style: none; }
+  .nav-links a { font-family: 'Space Mono', monospace; font-size: 0.65rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--silver); text-decoration: none; transition: color 0.3s ease; }
   .nav-links a:hover { color: var(--accent); }
 
-  /* HERO */
-  .hero {
-    height: 100vh;
-    position: relative;
-    display: flex;
-    align-items: flex-end;
-    padding: 0 48px 80px;
-    overflow: hidden;
-  }
-  .hero-bg {
-    position: absolute;
-    inset: 0;
-    background: 
-      radial-gradient(ellipse at 70% 40%, rgba(139,106,58,0.12) 0%, transparent 60%),
-      radial-gradient(ellipse at 20% 80%, rgba(200,169,110,0.06) 0%, transparent 50%),
-      linear-gradient(to bottom, var(--black) 0%, #0a0805 100%);
-  }
-  .hero-image-frame {
-    position: absolute;
-    top: 0; right: 0;
-    width: 55%;
-    height: 100%;
-    overflow: hidden;
-  }
-  .hero-image-frame img {
-    width: 100%; height: 100%;
-    object-fit: cover;
-    opacity: 0.55;
-    filter: contrast(1.1) saturate(0.6);
-    transition: opacity 1s ease;
-  }
-  .hero-image-frame::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to right, var(--black) 0%, transparent 40%, transparent 70%, var(--black) 100%),
-                linear-gradient(to top, var(--black) 0%, transparent 30%);
-  }
-  .hero-content {
-    position: relative;
-    z-index: 2;
-    max-width: 600px;
-  }
-  .hero-eyebrow {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.6rem;
-    letter-spacing: 0.35em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 24px;
-    opacity: 0;
-    animation: fadeUp 0.8s ease 0.3s forwards;
-  }
-  .hero-name {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(5rem, 10vw, 10rem);
-    line-height: 0.9;
-    letter-spacing: 0.02em;
-    color: var(--white);
-    opacity: 0;
-    animation: fadeUp 0.9s ease 0.5s forwards;
-  }
-  .hero-name span {
-    display: block;
-    color: transparent;
-    -webkit-text-stroke: 1px rgba(200,169,110,0.5);
-  }
-  .hero-tagline {
-    margin-top: 32px;
-    font-size: 1.25rem;
-    font-style: italic;
-    font-weight: 300;
-    color: var(--light);
-    line-height: 1.6;
-    max-width: 400px;
-    opacity: 0;
-    animation: fadeUp 0.9s ease 0.7s forwards;
-  }
-  .hero-scroll {
-    position: absolute;
-    bottom: 40px;
-    right: 48px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 12px;
-    opacity: 0;
-    animation: fadeIn 1s ease 1.2s forwards;
-  }
-  .hero-scroll span {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.55rem;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    color: var(--silver);
-    writing-mode: vertical-rl;
-  }
-  .scroll-line {
-    width: 1px;
-    height: 60px;
-    background: linear-gradient(to bottom, var(--accent), transparent);
-    animation: scrollPulse 2s ease-in-out infinite;
-  }
+  .hero { height: 100vh; position: relative; display: flex; align-items: flex-end; padding: 0 48px 80px; overflow: hidden; }
+  .hero-bg { position: absolute; inset: 0; background: radial-gradient(ellipse at 70% 40%, rgba(139,106,58,0.12) 0%, transparent 60%), radial-gradient(ellipse at 20% 80%, rgba(200,169,110,0.06) 0%, transparent 50%), linear-gradient(to bottom, var(--black) 0%, #0a0805 100%); }
+  .hero-image-frame { position: absolute; top: 0; right: 0; width: 55%; height: 100%; overflow: hidden; }
+  .hero-image-frame img { width: 100%; height: 100%; object-fit: cover; opacity: 0.55; filter: contrast(1.1) saturate(0.6); }
+  .hero-image-frame::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to right, var(--black) 0%, transparent 40%, transparent 70%, var(--black) 100%), linear-gradient(to top, var(--black) 0%, transparent 30%); }
+  .hero-content { position: relative; z-index: 2; max-width: 600px; }
+  .hero-eyebrow { font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.35em; text-transform: uppercase; color: var(--accent); margin-bottom: 24px; opacity: 0; animation: fadeUp 0.8s ease 0.3s forwards; }
+  .hero-name { font-family: 'Bebas Neue', sans-serif; font-size: clamp(5rem,10vw,10rem); line-height: 0.9; letter-spacing: 0.02em; color: var(--white); opacity: 0; animation: fadeUp 0.9s ease 0.5s forwards; }
+  .hero-name span { display: block; color: transparent; -webkit-text-stroke: 1px rgba(200,169,110,0.5); }
+  .hero-tagline { margin-top: 32px; font-size: 1.25rem; font-style: italic; font-weight: 300; color: var(--light); line-height: 1.6; max-width: 400px; opacity: 0; animation: fadeUp 0.9s ease 0.7s forwards; }
+  .hero-scroll { position: absolute; bottom: 40px; right: 48px; display: flex; flex-direction: column; align-items: center; gap: 12px; opacity: 0; animation: fadeIn 1s ease 1.2s forwards; }
+  .hero-scroll span { font-family: 'Space Mono', monospace; font-size: 0.55rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--silver); writing-mode: vertical-rl; }
+  .scroll-line { width: 1px; height: 60px; background: linear-gradient(to bottom, var(--accent), transparent); animation: scrollPulse 2s ease-in-out infinite; }
 
-  /* SECTIONS */
-  section {
-    padding: 120px 48px;
-  }
-  .section-label {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.6rem;
-    letter-spacing: 0.35em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 16px;
-  }
-  .section-title {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(2.5rem, 5vw, 5rem);
-    letter-spacing: 0.05em;
-    line-height: 1;
-    color: var(--white);
-    margin-bottom: 60px;
-  }
+  section { padding: 120px 48px; }
+  .section-label { font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.35em; text-transform: uppercase; color: var(--accent); margin-bottom: 16px; }
+  .section-title { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.5rem,5vw,5rem); letter-spacing: 0.05em; line-height: 1; color: var(--white); margin-bottom: 60px; }
 
-  /* CATEGORIES */
-  .categories {
-    background: var(--deep);
-    border-top: 1px solid var(--ash);
-  }
-  .category-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1px;
-    background: var(--ash);
-    margin-top: 60px;
-  }
-  .category-card {
-    background: var(--coal);
-    padding: 48px 36px;
-    position: relative;
-    overflow: hidden;
-    cursor: none;
-    transition: background 0.4s ease;
-  }
-  .category-card::before {
-    content: '';
-    position: absolute;
-    bottom: 0; left: 0;
-    width: 100%; height: 2px;
-    background: var(--accent);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform 0.4s ease;
-  }
+  .categories { background: var(--deep); border-top: 1px solid var(--ash); }
+  .category-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 1px; background: var(--ash); margin-top: 60px; }
+  .category-card { background: var(--coal); padding: 48px 36px; position: relative; overflow: hidden; cursor: none; transition: background 0.4s ease; }
+  .category-card::before { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 2px; background: var(--accent); transform: scaleX(0); transform-origin: left; transition: transform 0.4s ease; }
   .category-card:hover { background: var(--ash); }
   .category-card:hover::before { transform: scaleX(1); }
-  .category-num {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 4rem;
-    color: var(--fog);
-    line-height: 1;
-    margin-bottom: 20px;
-    transition: color 0.4s ease;
-  }
+  .category-num { font-family: 'Bebas Neue', sans-serif; font-size: 4rem; color: var(--fog); line-height: 1; margin-bottom: 20px; transition: color 0.4s ease; }
   .category-card:hover .category-num { color: var(--accent2); }
-  .category-name {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.6rem;
-    letter-spacing: 0.08em;
-    color: var(--white);
-    margin-bottom: 12px;
-  }
-  .category-desc {
-    font-size: 0.9rem;
-    font-style: italic;
-    color: var(--silver);
-    line-height: 1.6;
-  }
+  .category-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 0.08em; color: var(--white); margin-bottom: 12px; }
+  .category-desc { font-size: 0.9rem; font-style: italic; color: var(--silver); line-height: 1.6; }
 
-  /* GALLERY */
   .gallery { background: var(--black); }
-  .gallery-filters {
-    display: flex;
-    gap: 24px;
-    margin-bottom: 48px;
-    flex-wrap: wrap;
-  }
-  .filter-btn {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.6rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--silver);
-    background: none;
-    border: 1px solid var(--ash);
-    padding: 10px 20px;
-    cursor: none;
-    transition: all 0.3s ease;
-  }
-  .filter-btn:hover, .filter-btn.active {
-    color: var(--accent);
-    border-color: var(--accent);
-    background: rgba(200,169,110,0.05);
-  }
-  .gallery-grid {
-    columns: 3;
-    column-gap: 12px;
-  }
-  .gallery-item {
-    break-inside: avoid;
-    margin-bottom: 12px;
-    position: relative;
-    overflow: hidden;
-    display: block;
-    cursor: none;
-  }
-  .gallery-item img {
-    width: 100%;
-    display: block;
-    filter: grayscale(20%) contrast(1.05);
-    transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94), filter 0.6s ease;
-  }
-  .gallery-item:hover img {
-    transform: scale(1.04);
-    filter: grayscale(0%) contrast(1.1);
-  }
-  .gallery-item-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(to top, rgba(8,8,8,0.85) 0%, transparent 50%);
-    opacity: 0;
-    transition: opacity 0.4s ease;
-    display: flex;
-    align-items: flex-end;
-    padding: 24px;
-  }
+  .gallery-filters { display: flex; gap: 24px; margin-bottom: 48px; flex-wrap: wrap; }
+  .filter-btn { font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--silver); background: none; border: 1px solid var(--ash); padding: 10px 20px; cursor: none; transition: all 0.3s ease; }
+  .filter-btn:hover, .filter-btn.active { color: var(--accent); border-color: var(--accent); background: rgba(200,169,110,0.05); }
+
+  .gallery-grid { columns: 3; column-gap: 12px; }
+  .gallery-item { break-inside: avoid; margin-bottom: 12px; position: relative; overflow: hidden; display: block; cursor: none; }
+  .gallery-item img { width: 100%; display: block; filter: grayscale(20%) contrast(1.05); transition: transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94), filter 0.6s ease; }
+  .gallery-item:hover img { transform: scale(1.04); filter: grayscale(0%) contrast(1.1); }
+  .gallery-item-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(8,8,8,0.85) 0%, transparent 50%); opacity: 0; transition: opacity 0.4s ease; display: flex; align-items: flex-end; padding: 24px; }
   .gallery-item:hover .gallery-item-overlay { opacity: 1; }
-  .gallery-item-info {
-    transform: translateY(10px);
-    transition: transform 0.4s ease;
-  }
+  .gallery-item-info { transform: translateY(10px); transition: transform 0.4s ease; }
   .gallery-item:hover .gallery-item-info { transform: translateY(0); }
-  .gallery-item-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 1.1rem;
-    font-style: italic;
-    color: var(--white);
-    margin-bottom: 4px;
-  }
-  .gallery-item-cat {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.55rem;
-    letter-spacing: 0.25em;
-    text-transform: uppercase;
-    color: var(--accent);
-  }
+  .gallery-item-title { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; font-style: italic; color: var(--white); margin-bottom: 4px; }
+  .gallery-item-cat { font-family: 'Space Mono', monospace; font-size: 0.55rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--accent); }
 
-  /* PLACEHOLDER IMAGES - cinematic dark rectangles */
-  .placeholder-img {
-    width: 100%;
-    display: block;
-    background: var(--coal);
-    position: relative;
-    overflow: hidden;
-  }
-  .placeholder-img::before {
-    content: '';
-    display: block;
-    padding-top: var(--ratio, 70%);
-  }
-  .placeholder-img::after {
-    content: 'ADD PHOTO';
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Space Mono', monospace;
-    font-size: 0.55rem;
-    letter-spacing: 0.3em;
-    color: var(--fog);
-  }
-  .placeholder-img .gradient-fill {
-    position: absolute;
-    inset: 0;
-    background: 
-      radial-gradient(ellipse at 30% 70%, rgba(139,106,58,0.08) 0%, transparent 60%),
-      linear-gradient(135deg, var(--coal) 0%, var(--ash) 50%, var(--coal) 100%);
-  }
-
-  /* ABOUT */
-  .about {
-    background: var(--deep);
-    border-top: 1px solid var(--ash);
-  }
-  .about-inner {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 80px;
-    align-items: center;
-  }
-  .about-image {
-    position: relative;
-  }
-  .about-image-frame {
-    width: 100%;
-    aspect-ratio: 3/4;
-    background: var(--coal);
-    position: relative;
-    overflow: hidden;
-  }
-  .about-image-frame .gradient-fill {
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(ellipse at 50% 30%, rgba(139,106,58,0.1) 0%, transparent 70%),
-                linear-gradient(to bottom, var(--ash), var(--coal));
-  }
-  .about-image-frame::after {
-    content: 'YOUR PORTRAIT';
-    position: absolute;
-    inset: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Space Mono', monospace;
-    font-size: 0.55rem;
-    letter-spacing: 0.3em;
-    color: var(--fog);
-  }
-  .about-image::before {
-    content: '';
-    position: absolute;
-    top: 20px; left: -20px;
-    right: 20px; bottom: -20px;
-    border: 1px solid var(--ash);
-    z-index: -1;
-  }
-  .about-text {}
-  .about-text p {
-    font-size: 1.15rem;
-    font-weight: 300;
-    line-height: 1.9;
-    color: var(--light);
-    margin-bottom: 24px;
-  }
+  .about { background: var(--deep); border-top: 1px solid var(--ash); }
+  .about-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+  .about-image { position: relative; }
+  .about-image-frame { width: 100%; aspect-ratio: 3/4; background: var(--coal); position: relative; overflow: hidden; }
+  .about-image-frame .gradient-fill { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 30%, rgba(139,106,58,0.1) 0%, transparent 70%), linear-gradient(to bottom, var(--ash), var(--coal)); }
+  .about-image-frame::after { content: 'YOUR PORTRAIT'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: 'Space Mono', monospace; font-size: 0.55rem; letter-spacing: 0.3em; color: var(--fog); }
+  .about-image::before { content: ''; position: absolute; top: 20px; left: -20px; right: 20px; bottom: -20px; border: 1px solid var(--ash); z-index: -1; }
+  .about-text p { font-size: 1.15rem; font-weight: 300; line-height: 1.9; color: var(--light); margin-bottom: 24px; }
   .about-text p em { color: var(--accent); font-style: italic; }
-  .about-stats {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
-    margin-top: 48px;
-    padding-top: 40px;
-    border-top: 1px solid var(--ash);
-  }
-  .stat-num {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 2.5rem;
-    color: var(--accent);
-    letter-spacing: 0.05em;
-  }
-  .stat-label {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.6rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--silver);
-    margin-top: 4px;
-  }
+  .about-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 24px; margin-top: 48px; padding-top: 40px; border-top: 1px solid var(--ash); }
+  .stat-num { font-family: 'Bebas Neue', sans-serif; font-size: 2.5rem; color: var(--accent); letter-spacing: 0.05em; }
+  .stat-label { font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--silver); margin-top: 4px; }
 
-  /* GEAR */
-  .gear {
-    background: var(--black);
-    border-top: 1px solid var(--ash);
-  }
-  .gear-list {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1px;
-    background: var(--ash);
-    margin-top: 60px;
-  }
-  .gear-item {
-    background: var(--coal);
-    padding: 36px;
-    transition: background 0.3s ease;
-  }
+  .gear { background: var(--black); border-top: 1px solid var(--ash); }
+  .gear-list { display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--ash); margin-top: 60px; }
+  .gear-item { background: var(--coal); padding: 36px; transition: background 0.3s ease; }
   .gear-item:hover { background: var(--ash); }
-  .gear-icon {
-    font-size: 1.5rem;
-    margin-bottom: 16px;
-    opacity: 0.7;
-  }
-  .gear-name {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 1.2rem;
-    letter-spacing: 0.08em;
-    color: var(--white);
-    margin-bottom: 6px;
-  }
-  .gear-detail {
-    font-size: 0.85rem;
-    font-style: italic;
-    color: var(--silver);
-  }
+  .gear-icon { font-size: 1.5rem; margin-bottom: 16px; opacity: 0.7; }
+  .gear-name { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 0.08em; color: var(--white); margin-bottom: 6px; }
+  .gear-detail { font-size: 0.85rem; font-style: italic; color: var(--silver); }
 
-  /* CONTACT */
-  .contact {
-    background: var(--deep);
-    border-top: 1px solid var(--ash);
-    text-align: center;
-  }
+  .contact { background: var(--deep); border-top: 1px solid var(--ash); text-align: center; }
   .contact-inner { max-width: 600px; margin: 0 auto; }
-  .contact-text {
-    font-size: 1.2rem;
-    font-style: italic;
-    font-weight: 300;
-    color: var(--light);
-    line-height: 1.8;
-    margin-bottom: 48px;
-  }
-  .contact-email {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: clamp(1.8rem, 4vw, 3.5rem);
-    letter-spacing: 0.08em;
-    color: var(--white);
-    text-decoration: none;
-    border-bottom: 1px solid var(--accent);
-    padding-bottom: 4px;
-    transition: color 0.3s ease, border-color 0.3s ease;
-  }
+  .contact-text { font-size: 1.2rem; font-style: italic; font-weight: 300; color: var(--light); line-height: 1.8; margin-bottom: 48px; }
+  .contact-email { font-family: 'Bebas Neue', sans-serif; font-size: clamp(1.8rem,4vw,3.5rem); letter-spacing: 0.08em; color: var(--white); text-decoration: none; border-bottom: 1px solid var(--accent); padding-bottom: 4px; transition: color 0.3s ease; }
   .contact-email:hover { color: var(--accent); }
-  .contact-socials {
-    display: flex;
-    justify-content: center;
-    gap: 32px;
-    margin-top: 48px;
-  }
-  .social-link {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.6rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--silver);
-    text-decoration: none;
-    transition: color 0.3s ease;
-  }
+  .contact-socials { display: flex; justify-content: center; gap: 32px; margin-top: 48px; }
+  .social-link { font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--silver); text-decoration: none; transition: color 0.3s ease; }
   .social-link:hover { color: var(--accent); }
 
-  /* FOOTER */
-  footer {
-    background: var(--black);
-    border-top: 1px solid var(--ash);
-    padding: 32px 48px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  footer p {
-    font-family: 'Space Mono', monospace;
-    font-size: 0.55rem;
-    letter-spacing: 0.15em;
-    color: var(--mist);
-  }
+  footer { background: var(--black); border-top: 1px solid var(--ash); padding: 32px 48px; display: flex; justify-content: space-between; align-items: center; }
+  footer p { font-family: 'Space Mono', monospace; font-size: 0.55rem; letter-spacing: 0.15em; color: var(--mist); }
   footer span { color: var(--accent2); }
 
   /* LIGHTBOX */
-  .lightbox {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.95);
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.4s ease;
-  }
+  .lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.96); z-index: 1000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.4s ease; }
   .lightbox.open { opacity: 1; pointer-events: all; }
-  .lightbox img {
-    max-width: 85vw;
-    max-height: 85vh;
-    object-fit: contain;
-    filter: none;
-  }
-  .lightbox-placeholder {
-    width: 70vw;
-    height: 70vh;
-    background: var(--coal);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: 'Space Mono', monospace;
-    font-size: 0.65rem;
-    letter-spacing: 0.3em;
-    color: var(--fog);
-  }
-  .lightbox-close {
-    position: absolute;
-    top: 32px; right: 40px;
-    font-family: 'Space Mono', monospace;
-    font-size: 0.6rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--silver);
-    background: none;
-    border: none;
-    cursor: none;
-    transition: color 0.3s ease;
-  }
+  .lightbox-img-wrap { max-width: 82vw; max-height: 88vh; display: flex; align-items: center; justify-content: center; }
+  .lightbox-img-wrap img { max-width: 82vw; max-height: 88vh; object-fit: contain; display: block; transition: opacity 0.25s ease; }
+  .lightbox-img-wrap img.loading { opacity: 0.3; }
+  .lightbox-close { position: absolute; top: 28px; right: 36px; font-family: 'Space Mono', monospace; font-size: 0.6rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--silver); background: none; border: none; cursor: none; transition: color 0.3s ease; padding: 8px; }
   .lightbox-close:hover { color: var(--accent); }
+  .lightbox-nav { position: absolute; top: 50%; transform: translateY(-50%); font-family: 'Space Mono', monospace; font-size: 0.58rem; letter-spacing: 0.15em; color: var(--silver); background: rgba(8,8,8,0.7); border: 1px solid var(--ash); padding: 14px 18px; cursor: none; transition: all 0.3s ease; }
+  .lightbox-nav:hover { color: var(--accent); border-color: var(--accent); background: rgba(200,169,110,0.08); }
+  .lightbox-prev { left: 28px; }
+  .lightbox-next { right: 28px; }
+  .lightbox-counter { position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%); font-family: 'Space Mono', monospace; font-size: 0.55rem; letter-spacing: 0.25em; color: var(--silver); }
+  .lightbox-meta { position: absolute; bottom: 52px; left: 50%; transform: translateX(-50%); text-align: center; }
+  .lightbox-meta-title { font-family: 'Cormorant Garamond', serif; font-size: 1rem; font-style: italic; color: var(--white); margin-bottom: 4px; }
+  .lightbox-meta-cat { font-family: 'Space Mono', monospace; font-size: 0.5rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--accent); }
 
-  /* ANIMATIONS */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
-  }
-  @keyframes scrollPulse {
-    0%, 100% { opacity: 0.3; }
-    50% { opacity: 1; }
-  }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes scrollPulse { 0%,100% { opacity: 0.3; } 50% { opacity: 1; } }
 
-  .reveal {
-    opacity: 0;
-    transform: translateY(40px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
-  }
-  .reveal.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.8s ease, transform 0.8s ease; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
 
-  /* RESPONSIVE */
   @media (max-width: 900px) {
-    nav { padding: 20px 24px; }
-    .nav-links { gap: 24px; }
-    section { padding: 80px 24px; }
-    .hero { padding: 0 24px 60px; }
+    nav { padding: 20px 24px; } .nav-links { gap: 24px; }
+    section { padding: 80px 24px; } .hero { padding: 0 24px 60px; }
     .hero-image-frame { width: 100%; opacity: 0.25; }
-    .category-grid { grid-template-columns: repeat(2, 1fr); }
+    .category-grid { grid-template-columns: repeat(2,1fr); }
     .gallery-grid { columns: 2; }
     .about-inner { grid-template-columns: 1fr; gap: 48px; }
     .gear-list { grid-template-columns: 1fr; }
     footer { flex-direction: column; gap: 12px; text-align: center; }
+    .lightbox-nav { padding: 10px 12px; font-size: 0.5rem; }
+    .lightbox-prev { left: 8px; } .lightbox-next { right: 8px; }
   }
-
   @media (max-width: 600px) {
     .hero-name { font-size: 4.5rem; }
     .category-grid { grid-template-columns: 1fr; }
@@ -672,7 +158,6 @@
 <div class="cursor" id="cursor"></div>
 <div class="cursor-ring" id="cursorRing"></div>
 
-<!-- NAV -->
 <nav>
   <a href="#" class="nav-logo">S<span>.</span>SWAGOT</a>
   <ul class="nav-links">
@@ -683,18 +168,14 @@
   </ul>
 </nav>
 
-<!-- HERO -->
 <section class="hero" id="home">
   <div class="hero-bg"></div>
   <div class="hero-image-frame">
-    <img src="https://lh3.googleusercontent.com/pw/AP1GczM_SMFMklonh_91_mrXtGB-da5hO0YYiPzlCnCb27UxrqXSEd5W0RpVncHR6ZI4kn9O23HY1bn6_uvuG0XGBnx1mT90l7awxSy29KShmXVlI4skEPI=w1920-h1080-no" alt="Hero — Swagot Photography">
+    <img src="https://lh3.googleusercontent.com/pw/AP1GczM_SMFMklonh_91_mrXtGB-da5hO0YYiPzlCnCb27UxrqXSEd5W0RpVncHR6ZI4kn9O23HY1bn6_uvuG0XGBnx1mT90l7awxSy29KShmXVlI4skEPI=w1920-h1080-no" alt="Hero">
   </div>
   <div class="hero-content">
     <p class="hero-eyebrow">Photography Portfolio</p>
-    <h1 class="hero-name">
-      SWAGOT
-      <span>SEES</span>
-    </h1>
+    <h1 class="hero-name">SWAGOT<span>SEES</span></h1>
     <p class="hero-tagline">Landscapes that breathe. Streets that speak. Portraits that don't lie.</p>
   </div>
   <div class="hero-scroll">
@@ -703,7 +184,6 @@
   </div>
 </section>
 
-<!-- CATEGORIES -->
 <section class="categories" id="categories">
   <p class="section-label reveal">Disciplines</p>
   <h2 class="section-title reveal">What I Shoot</h2>
@@ -731,115 +211,220 @@
   </div>
 </section>
 
-<!-- GALLERY -->
 <section class="gallery" id="gallery">
   <p class="section-label reveal">Selected Work</p>
   <h2 class="section-title reveal">Portfolio</h2>
-
   <div class="gallery-filters reveal">
-    <button class="filter-btn active" onclick="filterGallery('all', this)">All</button>
-    <button class="filter-btn" onclick="filterGallery('landscape', this)">Landscape</button>
-    <button class="filter-btn" onclick="filterGallery('street', this)">Street</button>
-    <button class="filter-btn" onclick="filterGallery('portrait', this)">Portrait</button>
-    <button class="filter-btn" onclick="filterGallery('abstract', this)">Abstract</button>
+    <button class="filter-btn active" onclick="filterGallery('all',this)">All</button>
+    <button class="filter-btn" onclick="filterGallery('landscape',this)">Landscape</button>
+    <button class="filter-btn" onclick="filterGallery('street',this)">Street</button>
+    <button class="filter-btn" onclick="filterGallery('portrait',this)">Portrait</button>
+    <button class="filter-btn" onclick="filterGallery('abstract',this)">Abstract</button>
   </div>
-
   <div class="gallery-grid" id="galleryGrid">
-    <!-- REAL PHOTO -->
-    <div class="gallery-item" data-category="landscape" onclick="openLightbox(this)">
-      <img src="https://lh3.googleusercontent.com/pw/AP1GczM_SMFMklonh_91_mrXtGB-da5hO0YYiPzlCnCb27UxrqXSEd5W0RpVncHR6ZI4kn9O23HY1bn6_uvuG0XGBnx1mT90l7awxSy29KShmXVlI4skEPI=w800-h600-no" alt="Golden Hour, Hills">
-      <div class="gallery-item-overlay">
-        <div class="gallery-item-info">
-          <div class="gallery-item-title">Golden Hour, Hills</div>
-          <div class="gallery-item-cat">Landscape</div>
-        </div>
-      </div>
+
+    <div class="gallery-item" data-category="landscape" data-title="Frame 01" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczM_SMFMklonh_91_mrXtGB-da5hO0YYiPzlCnCb27UxrqXSEd5W0RpVncHR6ZI4kn9O23HY1bn6_uvuG0XGBnx1mT90l7awxSy29KShmXVlI4skEPI=w800-h534-no" alt="Frame 01">
+      <div class="gallery-item-overlay"><div class="gallery-item-info"><div class="gallery-item-title">Frame 01</div><div class="gallery-item-cat">Landscape</div></div></div>
     </div>
 
-    <!-- PLACEHOLDERS -->
-    <div class="gallery-item" data-category="street" onclick="openLightbox(this)">
-      <div class="placeholder-img" style="--ratio: 75%;"><div class="gradient-fill"></div></div>
-      <div class="gallery-item-overlay">
-        <div class="gallery-item-info">
-          <div class="gallery-item-title">City 3 AM</div>
-          <div class="gallery-item-cat">Street</div>
-        </div>
-      </div>
+    <div class="gallery-item" data-category="portrait" data-title="Frame 02" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczO4hO1ue79XPl5iNprQXDV3Jp0xLnXctJXrzyjTmxM8DT0evbUqoxNr43DZ764YN7KZFX_0AbjHStihL4Ida2dpvh2fS3brnxydpEkp0PASYqu2d_I=w480-h720-no" alt="Frame 02">
+      <div class="gallery-item-overlay"><div class="gallery-item-info"><div class="gallery-item-title">Frame 02</div><div class="gallery-item-cat">Portrait</div></div></div>
     </div>
-    <div class="gallery-item" data-category="portrait" onclick="openLightbox(this)">
-      <div class="placeholder-img" style="--ratio: 120%;"><div class="gradient-fill"></div></div>
-      <div class="gallery-item-overlay">
-        <div class="gallery-item-info">
-          <div class="gallery-item-title">Between Thoughts</div>
-          <div class="gallery-item-cat">Portrait</div>
-        </div>
-      </div>
+
+    <div class="gallery-item" data-category="portrait" data-title="Frame 03" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczPh2ECuj_tDjciBYfqSHIGr_g0G9C61eDT4sLH-wCenqboV1GwDaXVp5Vt6nLy2pqfQ7MD6XCcK3SPslsOH_17Syt7nAhPUMBvW2wfDj6Y0UMigLwo=w480-h720-no" alt="Frame 03">
+      <div class="gallery-item-overlay"><div class="gallery-item-info"><div class="gallery-item-title">Frame 03</div><div class="gallery-item-cat">Portrait</div></div></div>
     </div>
-    <div class="gallery-item" data-category="abstract" onclick="openLightbox(this)">
-      <div class="placeholder-img" style="--ratio: 90%;"><div class="gradient-fill"></div></div>
-      <div class="gallery-item-overlay">
-        <div class="gallery-item-info">
-          <div class="gallery-item-title">Refraction No. 4</div>
-          <div class="gallery-item-cat">Abstract</div>
-        </div>
-      </div>
+
+    <div class="gallery-item" data-category="landscape" data-title="Frame 04" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczN7WCMn9U0vzq_yS4aqLxFSkIbGYVPKCv2gQEfWdzFNAiFzyBLaTW9DinF6godK7mHBcJFt5W9bu7bzHbflHLmNuJ3qWojUHxhhDkFKWLjjJL0GK74=w800-h534-no" alt="Frame 04">
+      <div class="gallery-item-overlay"><div class="gallery-item-info"><div class="gallery-item-title">Frame 04</div><div class="gallery-item-cat">Landscape</div></div></div>
     </div>
-    <div class="gallery-item" data-category="landscape" onclick="openLightbox(this)">
-      <div class="placeholder-img" style="--ratio: 66%;"><div class="gradient-fill"></div></div>
-      <div class="gallery-item-overlay">
-        <div class="gallery-item-info">
-          <div class="gallery-item-title">Before the Storm</div>
-          <div class="gallery-item-cat">Landscape</div>
-        </div>
-      </div>
+
+    <div class="gallery-item" data-category="portrait" data-title="Frame 05" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczNRj66P0P6gPRUKt2FEn297vVrVdFL_7i4na5zq290KBok1ZPN2DyC21t_7uz_vBa_SQ3AoIq2mVbtdra9TAL1oTsfV7zFW-FhEwU7CD5BtR0dXPuw=w480-h720-no" alt="Frame 05">
+      <div class="gallery-item-overlay"><div class="gallery-item-info"><div class="gallery-item-title">Frame 05</div><div class="gallery-item-cat">Portrait</div></div></div>
     </div>
-    <div class="gallery-item" data-category="street" onclick="openLightbox(this)">
-      <div class="placeholder-img" style="--ratio: 100%;"><div class="gradient-fill"></div></div>
-      <div class="gallery-item-overlay">
-        <div class="gallery-item-info">
-          <div class="gallery-item-title">Rain & Neon</div>
-          <div class="gallery-item-cat">Street</div>
-        </div>
-      </div>
+
+    <div class="gallery-item" data-category="portrait" data-title="Frame 06" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczMfj2MZ8a4ptlNKq_YiaetGTXU3a5I8JFR3wYWnl9fS2D0baX9uIvZ7D1W7wwZlj5iFX3K2MnVZ8ODRae3OVTItOfVR55j2fnuBca5dJeQjBdGgxxw=w480-h720-no" alt="Frame 06">
+      <div class="gallery-item-overlay"><div class="gallery-item-info"><div class="gallery-item-title">Frame 06</div><div class="gallery-item-cat">Portrait</div></div></div>
     </div>
-    <div class="gallery-item" data-category="portrait" onclick="openLightbox(this)">
-      <div class="placeholder-img" style="--ratio: 140%;"><div class="gradient-fill"></div></div>
-      <div class="gallery-item-overlay">
-        <div class="gallery-item-info">
-          <div class="gallery-item-title">Eyes Wide</div>
-          <div class="gallery-item-cat">Portrait</div>
-        </div>
-      </div>
+
+    <div class="gallery-item" data-category="landscape" data-title="Frame 07" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczPGNlQwkDvtHkjccrNk1uV2JA73fAptJNbdjOpu08A1wh7PIUogZcZDVynaBP2hl5s_XjvioKZkPW2Kx0899-EcDMrHOPKY0iiW5mTqMLTey0R4j5o=w800-h534-no" alt="Frame 07">
+      <div class="gallery-item-overlay"><div class="gallery-item-info"><div class="gallery-item-title">Frame 07</div><div class="gallery-item-cat">Landscape</div></div></div>
     </div>
-    <div class="gallery-item" data-category="abstract" onclick="openLightbox(this)">
-      <div class="placeholder-img" style="--ratio: 80%;"><div class="gradient-fill"></div></div>
-      <div class="gallery-item-overlay">
-        <div class="gallery-item-info">
-          <div class="gallery-item-title">Texture Study</div>
-          <div class="gallery-item-cat">Abstract</div>
-        </div>
-      </div>
+
+    <div class="gallery-item" data-category="street" data-title="Frame 08" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczPCfwf6MioTjA4BDY1QwBOrhwhuydUbPVJHNjkT4GJzU3qOKWelHcFr0J8h82aSTHtXG28H5Zutilwd_7ocbnB9iEND74qH6KiDtEKB-B6EGb7um0E=w800-h534-no" alt="Frame 08">
+      <div class="gallery-item-overlay"><div class="gallery-item-info"><div class="gallery-item-title">Frame 08</div><div class="gallery-item-cat">Street</div></div></div>
     </div>
-    <div class="gallery-item" data-category="landscape" onclick="openLightbox(this)">
-      <div class="placeholder-img" style="--ratio: 60%;"><div class="gradient-fill"></div></div>
-      <div class="gallery-item-overlay">
-        <div class="gallery-item-info">
-          <div class="gallery-item-title">Valley Mist</div>
-          <div class="gallery-item-cat">Landscape</div>
-        </div>
-      </div>
+
+    <div class="gallery-item" data-category="street" data-title="Frame 09" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczNEfMHBjAoFUG1mKcctXLibJswnyi1y_VlKuhopcuzOgEovANMnMOdCMguDJTI2dHv1iIR0N2j8DF_pANyQJQuE0HHzO6RM5suVQMga6l5pIwCdXbY=w800-h534-no" alt="Frame 09">
+      <div class="gallery-item-overlay"><div class="gallery-item-info"><div class="gallery-item-title">Frame 09</div><div class="gallery-item-cat">Street</div></div></div>
     </div>
+
+    <div class="gallery-item" data-category="abstract" data-title="Frame 10" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczMZo5wrWQx13Y_LQSup0sermeaWC3devaWiw32povekLfxNjLkdHDNzRG62RXnCXj5m0qlCxmh-mZ43PeshybxvtHFPen11T4T_R3xCwOYcT838cf0=w720-h720-no" alt="Frame 10">
+      <div class="gallery-item-overlay"><div class="gallery-item-info"><div class="gallery-item-title">Frame 10</div><div class="gallery-item-cat">Abstract</div></div></div>
+    </div>
+
+    <div class="gallery-item" data-category="landscape" data-title="Frame 11" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczMmj7Ziv7scf3-H22hOWYElghQ171ucXsRkT3lb8Ip3UdwH6tC78Fvo1-yWweogCZN1WXjf1evFKPUoy68Mo2IhGCO94U6f2PpLqu6WJRPqIBEddfw=w800-h534-no" alt="Frame 11">
+      <div class="gallery-item-overlay"><div class="gallery-item-info"><div class="gallery-item-title">Frame 11</div><div class="gallery-item-cat">Landscape</div></div></div>
+    </div>
+
+    <div class="gallery-item" data-category="portrait" data-title="Frame 12" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczOwk0imkpwhpZDZKTa3bSTcavgCQqr6URiCMrS4v6i0cvUcvHIN8yvMG07KE5pkWg_9F1dzRDAEBKQ6CVzwwFEutYiHEslamA6DK7ReTggy0UAip-A=w480-h720-no" alt="Frame 12">
+      <div class="gallery-item-overlay"><div class="gallery-item-info"><div class="gallery-item-title">Frame 12</div><div class="gallery-item-cat">Portrait</div></div></div>
+    </div>
+
+    <div class="gallery-item" data-category="landscape" data-title="Frame 13" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczM6OMgZukjkEuI8NmdutK6iS-yg0hH0nwnP4uKwzaIBs8idbBIFqYsqrgFe1TMgmGVS9sWspCss_lPOph9i-3uBw9AL8pxfyOQKvFzb5bmcsBoALmo=w800-h534-no" alt="Frame 13">
+      <div class="gallery-item-overlay"><div class="gallery-item-info"><div class="gallery-item-title">Frame 13</div><div class="gallery-item-cat">Landscape</div></div></div>
+    </div>
+
+    <div class="gallery-item" data-category="portrait" data-title="Frame 14" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczNduYE_bviruu5Eo4W-4mk8Qp2RHznhrSMCkGoB8e5JO6SFDmQB3ksvkdtdrkXou50b-oetmgNQsO1VRUV0G9bZMWpHzHX3UKI9arwHiQ1Y6hKxMuU=w480-h720-no" alt="Frame 14">
+      <div class="gallery-item-overlay"><div class="gallery-item-info"><div class="gallery-item-title">Frame 14</div><div class="gallery-item-cat">Portrait</div></div></div>
+    </div>
+
+    <div class="gallery-item" data-category="street" data-title="Frame 15" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczOn2tsp6TnG0HzDs8VUN5TOVdIp3J61_IV2AiKeIeRqZ0gF-zB7aYeXudl5kVCqnsT_tSJ-EIVMvkDpLadZVfhBRSubVAnzvcY4Hb3bSoz8Ciffyeo=w800-h534-no" alt="Frame 15">
+      <div class="gallery-item-overlay"><div class="gallery-item-info"><div class="gallery-item-title">Frame 15</div><div class="gallery-item-cat">Street</div></div></div>
+    </div>
+
+    <div class="gallery-item" data-category="landscape" data-title="Frame 16" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczNyLWe6y29idj-Kp9D_JUiNM59kwdvkExN58pmtpybFry0C20uwjmyGf3ZM46fj5hDDPM77XUambigG-XDIoINKzzT-t07L6gidb-OTUN984T9oTQM=w800-h534-no" alt="Frame 16">
+      <div class="gallery-item-overlay"><div class="gallery-item-info"><div class="gallery-item-title">Frame 16</div><div class="gallery-item-cat">Landscape</div></div></div>
+    </div>
+
+    <div class="gallery-item" data-category="landscape" data-title="Frame 17" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczNoDLbrbwPHZdHOtEJHgSl2hoEB6HvvK7KM68cuagvlyKm__76aay5RkQaGNcNO4Gjn-mo1y32-FPnFlz5MluWBvIZXiphFFu1vhG2iuQJ0772L-FA=w800-h534-no" alt="Frame 17">
+      <div class="gallery-item-overlay"><div class="gallery-item-info"><div class="gallery-item-title">Frame 17</div><div class="gallery-item-cat">Landscape</div></div></div>
+    </div>
+
+    <div class="gallery-item" data-category="portrait" data-title="Frame 18" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczO6uzY7-o-BDoh38LvnjpfrTRIUjyGZCA9iLHLETr6GWwL89Hl9kgnpLG0_jOuP7FKFe7RIBSVF18z3kNE9s1ryFcbkOuN38i7V8sgGXZWZBbRiLT4=w480-h720-no" alt="Frame 18">
+      <div class="gallery-item-overlay"><div class="gallery-item-info"><div class="gallery-item-title">Frame 18</div><div class="gallery-item-cat">Portrait</div></div></div>
+    </div>
+
+    <div class="gallery-item" data-category="portrait" data-title="Frame 19" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczMVm-JGLNFSJHhRCaEoQYO1b0IMAJ-WQMUTmi8BnzCy5jhYwp0ybshkzLDm5bnoyMy-NxY9AkVfCocYO0EGEs185JC1gq4WKEaJ5IlZ4IIfgdoN42c=w480-h720-no" alt="Frame 19">
+      <div class="gallery-item-overlay"><div class="gallery-item-info"><div class="gallery-item-title">Frame 19</div><div class="gallery-item-cat">Portrait</div></div></div>
+    </div>
+
+    <div class="gallery-item" data-category="street" data-title="Frame 20" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczMbCcJ_z6aviJ2e5G1GJhO7pEyd6cAyi-vB9zvQG_sxV9PBB0ijcyTVXUJIsMQbEPPj4y9NN93iy-VYxvovNQKFz3_GXazTq7ygXFlf0G90AMn4HeU=w800-h534-no" alt="Frame 20">
+      <div class="gallery-item-overlay"><div class="gallery-item-info"><div class="gallery-item-title">Frame 20</div><div class="gallery-item-cat">Street</div></div></div>
+    </div>
+
+    <div class="gallery-item" data-category="landscape" data-title="Frame 21" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczP0EzCbMelhvqZgRGoWlZwvemn417TQFOmBCA5VKGXrRpObWtqaen6R3iecQk0HdyU3lt_KLA1Qe79gnq0W1NkAEbO_G1Vhbn7cNCc2pNTGa28rhkA=w800-h534-no" alt="Frame 21">
+      <div class="gallery-item-overlay"><div class="gallery-item-info"><div class="gallery-item-title">Frame 21</div><div class="gallery-item-cat">Landscape</div></div></div>
+    </div>
+
+    <div class="gallery-item" data-category="portrait" data-title="Frame 22" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczP48rTZPlhIIXXQuLx3m96wrn22GGjGaxY6ptuwzDcoEMadHy0o7StgW7Xvdv59ezI0UxXzsUHw_eyFngwJXeBHf4Ss7JxMPYuZ-vkcKgxohsHZy3U=w480-h720-no" alt="Frame 22">
+      <div class="gallery-item-overlay"><div class="gallery-item-info"><div class="gallery-item-title">Frame 22</div><div class="gallery-item-cat">Portrait</div></div></div>
+    </div>
+
+    <div class="gallery-item" data-category="abstract" data-title="Frame 23" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczOzhzGDsMKzJw_9InPukXJw_nL9rVgMcjRO5jseiv5RnF2VEfX8euJ-cFfsLCbyvfApfSL36FC9TtY0yzHRj8C4xez1URGt9vvBGdARKbSP1pkRXDw=w800-h534-no" alt="Frame 23">
+      <div class="gallery-item-overlay"><div class="gallery-item-info"><div class="gallery-item-title">Frame 23</div><div class="gallery-item-cat">Abstract</div></div></div>
+    </div>
+
+    <div class="gallery-item" data-category="landscape" data-title="Frame 24" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczPU82DBfGxT1gsSAiwFZKZdd22wAuHlk-a8PBMPrlw_D8wyULB-RtTjAeHa0Rjdrf2Xqt5DBOs9VU6miogadAG1aszytVwNAo9OjZrEGb8xDjWYkik=w800-h534-no" alt="Frame 24">
+      <div class="gallery-item-overlay"><div class="gallery-item-info"><div class="gallery-item-title">Frame 24</div><div class="gallery-item-cat">Landscape</div></div></div>
+    </div>
+
+    <div class="gallery-item" data-category="street" data-title="Frame 25" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczP-Vnw2EeJlyicUlKsNogsmDr_2O1eoPa6opAckLyXxZ-dZA6nGa1h6dCPDtH4GaDrvzDtjnhpdpjJivg9ATC222x5r8oG0SYDeQeScro2_eC9AfKI=w800-h534-no" alt="Frame 25">
+      <div class="gallery-item-overlay"><div class="gallery-item-info"><div class="gallery-item-title">Frame 25</div><div class="gallery-item-cat">Street</div></div></div>
+    </div>
+
+    <div class="gallery-item" data-category="landscape" data-title="Frame 26" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczPkQSgV4ZUGGVSwBCwimTyW419tV5woxx_og95iD5noNYBbwktFBtA7b5Ie5uISqINo0XwNIs-RMpO9NaaGWVA_NcjYv_FQ7KzEQh3eYgPMAiAUYZ4=w800-h534-no" alt="Frame 26">
+      <div class="gallery-item-overlay"><div class="gallery-item-info"><div class="gallery-item-title">Frame 26</div><div class="gallery-item-cat">Landscape</div></div></div>
+    </div>
+
+    <div class="gallery-item" data-category="portrait" data-title="Frame 27" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczNBnLWMKBP8kAC73fsWraECaw5WBcWuDIyO7qRNnwQJ1dNJjDTnOMb6wHOAn0NqtSXBFMMVfVi-aUfQ_Ptcpk5TrgHXnF9jZFD3-2gWPIl3jfPeGIM=w480-h720-no" alt="Frame 27">
+      <div class="gallery-item-overlay"><div class="gallery-item-info"><div class="gallery-item-title">Frame 27</div><div class="gallery-item-cat">Portrait</div></div></div>
+    </div>
+
+    <div class="gallery-item" data-category="landscape" data-title="Frame 28" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczNsoHubbk78FNH_qxBw3tsnguXKpJi5a2TXNpIF22j6AeL3DT7OIWaJJnlQxlpbl9VQOu40N4tp2mrS9mfh3-cFvAjvacjyK9ILVFB_al9DO04zqVk=w800-h534-no" alt="Frame 28">
+      <div class="gallery-item-overlay"><div class="gallery-item-info"><div class="gallery-item-title">Frame 28</div><div class="gallery-item-cat">Landscape</div></div></div>
+    </div>
+
+    <div class="gallery-item" data-category="abstract" data-title="Frame 29" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczOd9afaGNtsXeOsm3UB_zA28ZYHm9PD9zn11z9CPN_MjMqwz9jWDccDmJfI2RnaO3fJrBXP-k3uZlIwWCWZSCQjsDnXxPH5kbpks8UPGqsUDuiaetc=w800-h534-no" alt="Frame 29">
+      <div class="gallery-item-overlay"><div class="gallery-item-info"><div class="gallery-item-title">Frame 29</div><div class="gallery-item-cat">Abstract</div></div></div>
+    </div>
+
+    <div class="gallery-item" data-category="landscape" data-title="Frame 30" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczOwRe-MZyXyOxStVKcN0NVh_4kj_FKnn_OPT-zAXla5bbXO_KmRJzxI7WMSkqoMD2qLt7F1PwoYPUDvYTeDOmvDyGxkSUBJRn1i1O1JTzMZm582tKM=w800-h534-no" alt="Frame 30">
+      <div class="gallery-item-overlay"><div class="gallery-item-info"><div class="gallery-item-title">Frame 30</div><div class="gallery-item-cat">Landscape</div></div></div>
+    </div>
+
+    <div class="gallery-item" data-category="landscape" data-title="Frame 31" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczMr4DRdX37q2GxxCxoM7dyYlHxsrcbuyE0B0Q4Hnwz8piCzlSGB_jfcl7LFSvpWO__qsIsrLF0MNLTLFcUd1HTP_RsEq8YWRw4ydY6Pl0Dx1EU5KQU=w800-h534-no" alt="Frame 31">
+      <div class="gallery-item-overlay"><div class="gallery-item-info"><div class="gallery-item-title">Frame 31</div><div class="gallery-item-cat">Landscape</div></div></div>
+    </div>
+
+    <div class="gallery-item" data-category="portrait" data-title="Frame 32" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczN4I0iateWrz1vijWV_yA9KrKZ79AlXvmkBhpVXZsSmMJ2RoPMdnCiWeosgvCyUTmkXKDE1yX7t2hX_sBbUCsAbplePwGnYZy9FaZxaZOSGDgatLiQ=w480-h720-no" alt="Frame 32">
+      <div class="gallery-item-overlay"><div class="gallery-item-info"><div class="gallery-item-title">Frame 32</div><div class="gallery-item-cat">Portrait</div></div></div>
+    </div>
+
+    <div class="gallery-item" data-category="portrait" data-title="Frame 33" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczO3WCSl3gxTYy6GyXkkOu6fod2EYcp_UJi7Q-K8ogsURexHtLXs_3aXmTvZDQLeIWO5ZmGlFS4tFDQik8wbGz43AjJiRDaw8n1b0RD7FKKrbIWesuo=w480-h720-no" alt="Frame 33">
+      <div class="gallery-item-overlay"><div class="gallery-item-info"><div class="gallery-item-title">Frame 33</div><div class="gallery-item-cat">Portrait</div></div></div>
+    </div>
+
+    <div class="gallery-item" data-category="portrait" data-title="Frame 34" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczN0nENUTjzJcV4Mozsz3rPLoVfGqXEcmJXjcELGRuzDtwxTKC5nDYR-fG9zBUGKVGvy9BqkBAAsTO_c9Z4NgH2Ie6EG1LHJM2wHeswuNdZw7WR8u30=w480-h720-no" alt="Frame 34">
+      <div class="gallery-item-overlay"><div class="gallery-item-info"><div class="gallery-item-title">Frame 34</div><div class="gallery-item-cat">Portrait</div></div></div>
+    </div>
+
+    <div class="gallery-item" data-category="portrait" data-title="Frame 35" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczM-MpGMjSifGe_ZWg1hCTYZJCsdwkKtYvoyoc05koKm4b2KcM6ndLeGnoRo1okX6rDNkj6NDCKq7ElQLgilcwt6EomhFY6zB8Ds-UlROo01-bf3Vvw=w480-h720-no" alt="Frame 35">
+      <div class="gallery-item-overlay"><div class="gallery-item-info"><div class="gallery-item-title">Frame 35</div><div class="gallery-item-cat">Portrait</div></div></div>
+    </div>
+
+    <div class="gallery-item" data-category="portrait" data-title="Frame 36" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczOe1aMntsdFV8PvABcKcr48ikjK3_2IW82kAzDgV56HGkRZslrsrBoDxZvQdr4QIu3JtvyMpd_tTx6_5uz5FRWUggJv02TPAyGStK6assbRCm8FCFg=w480-h720-no" alt="Frame 36">
+      <div class="gallery-item-overlay"><div class="gallery-item-info"><div class="gallery-item-title">Frame 36</div><div class="gallery-item-cat">Portrait</div></div></div>
+    </div>
+
+    <div class="gallery-item" data-category="portrait" data-title="Frame 37" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczOcrk6HMRSpjutAh5s3AZ4JuFxtUZGAfZ7uHk3pS_57Gg3sxthvWx_QenHSTBrJKtv7EOUrLHa5s81kPbisKXY1kKUF4hkLs_q6D3qu7zEGDBfBE6Y=w480-h720-no" alt="Frame 37">
+      <div class="gallery-item-overlay"><div class="gallery-item-info"><div class="gallery-item-title">Frame 37</div><div class="gallery-item-cat">Portrait</div></div></div>
+    </div>
+
+    <div class="gallery-item" data-category="portrait" data-title="Frame 38" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczMS7fSd1T917P8AeLx9cinlHY_mSCbjILJXJZqWU0WE6QEFVr0HetH1ImKcMEbN_J_fdoVzCvq2nyH3wXVhUL4DDawOOGmlQnXI1d13uehBdU9FjFA=w480-h720-no" alt="Frame 38">
+      <div class="gallery-item-overlay"><div class="gallery-item-info"><div class="gallery-item-title">Frame 38</div><div class="gallery-item-cat">Portrait</div></div></div>
+    </div>
+
+    <div class="gallery-item" data-category="landscape" data-title="Frame 39" onclick="openLightbox(this)">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczNh61V1JVWkmTRuozgZhrauuFM8lxIHy-pwe3aw_Y1qJU-Z-QFEmgv3YxnOjUSCKLnzRqU8o9k3L0U7BP14ATX_m5PL5Uwg3srYEreGRX6i1bPvO54=w800-h534-no" alt="Frame 39">
+      <div class="gallery-item-overlay"><div class="gallery-item-info"><div class="gallery-item-title">Frame 39</div><div class="gallery-item-cat">Landscape</div></div></div>
+    </div>
+
   </div>
 </section>
 
-<!-- ABOUT -->
 <section class="about" id="about">
   <div class="about-inner">
     <div class="about-image reveal">
-      <div class="about-image-frame">
-        <div class="gradient-fill"></div>
-        <!-- Replace with: <img src="YOUR_PORTRAIT_URL" alt="Swagot"> style="width:100%;height:100%;object-fit:cover;"> -->
-      </div>
+      <div class="about-image-frame"><div class="gradient-fill"></div></div>
     </div>
     <div class="about-text reveal">
       <p class="section-label">About</p>
@@ -848,24 +433,14 @@
       <p>I shoot what doesn't wait: light before it shifts, people before they perform, nature before the wind changes. Every frame is a decision made in under a second, refined in the hours after.</p>
       <p>Photography is how I think. Everything else is just waiting.</p>
       <div class="about-stats">
-        <div>
-          <div class="stat-num">4+</div>
-          <div class="stat-label">Disciplines</div>
-        </div>
-        <div>
-          <div class="stat-num">1</div>
-          <div class="stat-label">Camera Body</div>
-        </div>
-        <div>
-          <div class="stat-num">∞</div>
-          <div class="stat-label">Frames Left</div>
-        </div>
+        <div><div class="stat-num">4+</div><div class="stat-label">Disciplines</div></div>
+        <div><div class="stat-num">39</div><div class="stat-label">Published Frames</div></div>
+        <div><div class="stat-num">∞</div><div class="stat-label">Frames Left</div></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- GEAR -->
 <section class="gear" id="gear">
   <p class="section-label reveal">Equipment</p>
   <h2 class="section-title reveal">The Kit</h2>
@@ -888,7 +463,6 @@
   </div>
 </section>
 
-<!-- CONTACT -->
 <section class="contact" id="contact">
   <div class="contact-inner">
     <p class="section-label reveal">Get In Touch</p>
@@ -904,83 +478,105 @@
   </div>
 </section>
 
-<!-- FOOTER -->
 <footer>
   <p>© 2025 Swagot. All rights reserved.</p>
   <p>Shot on <span>Canon EOS 1500D</span> — Built with intent.</p>
 </footer>
 
 <!-- LIGHTBOX -->
-<div class="lightbox" id="lightbox" onclick="closeLightbox()">
-  <div class="lightbox-placeholder" id="lightboxContent">CLICK A PHOTO TO PREVIEW</div>
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-nav lightbox-prev" onclick="navigateLightbox(-1)">← PREV</button>
+  <div class="lightbox-img-wrap">
+    <img id="lightboxImg" src="" alt="">
+  </div>
+  <button class="lightbox-nav lightbox-next" onclick="navigateLightbox(1)">NEXT →</button>
   <button class="lightbox-close" onclick="closeLightbox()">[ CLOSE ]</button>
+  <div class="lightbox-meta">
+    <div class="lightbox-meta-title" id="lightboxTitle"></div>
+    <div class="lightbox-meta-cat" id="lightboxCat"></div>
+  </div>
+  <div class="lightbox-counter" id="lightboxCounter"></div>
 </div>
 
 <script>
-  // Cursor
+  // Custom cursor
   const cursor = document.getElementById('cursor');
   const ring = document.getElementById('cursorRing');
-  let mx = 0, my = 0, rx = 0, ry = 0;
-  document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
-  function animateCursor() {
-    cursor.style.left = mx + 'px';
-    cursor.style.top = my + 'px';
-    rx += (mx - rx) * 0.12;
-    ry += (my - ry) * 0.12;
-    ring.style.left = rx + 'px';
-    ring.style.top = ry + 'px';
+  let mx=0, my=0, rx=0, ry=0;
+  document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; });
+  (function animateCursor() {
+    cursor.style.left=mx+'px'; cursor.style.top=my+'px';
+    rx+=(mx-rx)*0.12; ry+=(my-ry)*0.12;
+    ring.style.left=rx+'px'; ring.style.top=ry+'px';
     requestAnimationFrame(animateCursor);
-  }
-  animateCursor();
+  })();
 
-  // Reveal on scroll
-  const reveals = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach((entry, i) => {
-      if (entry.isIntersecting) {
-        setTimeout(() => entry.target.classList.add('visible'), i * 80);
-      }
-    });
+  // Scroll reveal
+  const obs = new IntersectionObserver(entries => {
+    entries.forEach((e,i) => { if(e.isIntersecting) setTimeout(()=>e.target.classList.add('visible'),i*80); });
   }, { threshold: 0.1 });
-  reveals.forEach(el => observer.observe(el));
+  document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 
   // Gallery filter
   function filterGallery(cat, btn) {
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     document.querySelectorAll('.gallery-item').forEach(item => {
-      if (cat === 'all' || item.dataset.category === cat) {
-        item.style.display = 'block';
-      } else {
-        item.style.display = 'none';
-      }
+      item.style.display = (cat==='all' || item.dataset.category===cat) ? 'block' : 'none';
     });
+    // Rebuild visible list for lightbox navigation
+    currentItems = getVisibleItems();
   }
 
   // Lightbox
-  function openLightbox(el) {
-    const lb = document.getElementById('lightbox');
-    const content = document.getElementById('lightboxContent');
-    const img = el.querySelector('img');
-    const title = el.querySelector('.gallery-item-title')?.textContent || '';
-    if (img) {
-      content.innerHTML = '';
-      content.style.cssText = '';
-      const lightImg = document.createElement('img');
-      // Use full resolution for lightbox
-      lightImg.src = img.src.replace(/=w\d+-h\d+-no/, '=w1920-h1080-no');
-      lightImg.alt = title;
-      content.appendChild(lightImg);
-    } else {
-      content.textContent = title ? title.toUpperCase() : 'ADD PHOTO HERE';
-      content.style.cssText = 'width:70vw;height:70vh;background:var(--coal);display:flex;align-items:center;justify-content:center;font-family:"Space Mono",monospace;font-size:0.65rem;letter-spacing:0.3em;color:var(--fog);';
-    }
-    lb.classList.add('open');
+  let currentItems = [], currentIndex = 0;
+
+  function getVisibleItems() {
+    return [...document.querySelectorAll('.gallery-item')].filter(el => el.style.display !== 'none');
   }
+
+  function openLightbox(el) {
+    currentItems = getVisibleItems();
+    currentIndex = currentItems.indexOf(el);
+    showFrame(currentIndex);
+    document.getElementById('lightbox').classList.add('open');
+  }
+
+  function showFrame(idx) {
+    const el = currentItems[idx];
+    const img = el.querySelector('img');
+    const lbImg = document.getElementById('lightboxImg');
+    // Swap size param to high-res for lightbox
+    const hiRes = img.src.replace(/=w\d+-h\d+-no/, '=w1600-h1200-no').replace(/=w\d+-h\d+-no/, '=w1600-h1200-no');
+    lbImg.classList.add('loading');
+    lbImg.onload = () => lbImg.classList.remove('loading');
+    lbImg.src = hiRes;
+    lbImg.alt = el.dataset.title || '';
+    document.getElementById('lightboxTitle').textContent = el.dataset.title || '';
+    document.getElementById('lightboxCat').textContent = el.dataset.category || '';
+    document.getElementById('lightboxCounter').textContent = (idx+1) + ' / ' + currentItems.length;
+  }
+
+  function navigateLightbox(dir) {
+    currentIndex = (currentIndex + dir + currentItems.length) % currentItems.length;
+    showFrame(currentIndex);
+  }
+
   function closeLightbox() {
     document.getElementById('lightbox').classList.remove('open');
   }
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+  document.getElementById('lightbox').addEventListener('click', function(e) {
+    if (e.target === this) closeLightbox();
+  });
+
+  document.addEventListener('keydown', e => {
+    const lb = document.getElementById('lightbox');
+    if (!lb.classList.contains('open')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowRight') navigateLightbox(1);
+    if (e.key === 'ArrowLeft') navigateLightbox(-1);
+  });
 </script>
 </body>
 </html>
