@@ -160,11 +160,10 @@
 <div class="cursor-ring" id="cursorRing"></div>
 
 <nav>
-  <a href="#" class="nav-logo">S<span>.</span>SWAGOT</a>
+  <a href="#" class="nav-logo">SWAGOT<span>.</span>SAIKIA</a>
   <ul class="nav-links">
     <li><a href="#gallery">Work</a></li>
     <li><a href="#about">About</a></li>
-    <li><a href="#gear">Gear</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
 </nav>
@@ -426,7 +425,7 @@
   <div class="about-inner">
     <div class="about-image reveal">
       <div class="about-image-frame">
-        <img src="https://lh3.googleusercontent.com/pw/AP1GczMVSPcxst_ifQzhKsqOXY0XI3ep6kEcMZMxoMnpXsPVvVMitdbPMpjPPNuANww-p9KDUx5C6ImMRDkj5E18Ydv9zwYKE6eTRdX9S10rnAb-ZrchfmE=w800-h800-no" alt="Swagot">
+        <img src="https://photos.google.com/share/AF1QipMDYjyIKuEt3PywvC7pJjfATezxz2f-sE4xl5eC1VIyy9sf6dn6YJ05WO9qPlJ_NQ/photo/AF1QipOlmJ3u80_zhu8gcbbGMdwFAqKUKgm6myUkbOvy?key=OEpnOXA5OTBQOC1jUERDLUZpZ3lpUWxXak9WNEd3" alt="Swagot">
       </div>
     </div>
     <div class="about-text reveal">
@@ -444,27 +443,6 @@
   </div>
 </section>
 
-<section class="gear" id="gear">
-  <p class="section-label reveal">Equipment</p>
-  <h2 class="section-title reveal">The Kit</h2>
-  <div class="gear-list reveal">
-    <div class="gear-item">
-      <div class="gear-icon">📷</div>
-      <div class="gear-name">Canon EOS 1500D</div>
-      <p class="gear-detail">24.1MP APS-C sensor. Entry-level body, uncompromising output.</p>
-    </div>
-    <div class="gear-item">
-      <div class="gear-icon">🔭</div>
-      <div class="gear-name">EF-S 18-55mm f/3.5-5.6</div>
-      <p class="gear-detail">Kit lens pushed to its limits. Versatile across every genre I shoot.</p>
-    </div>
-    <div class="gear-item">
-      <div class="gear-icon">⚙️</div>
-      <div class="gear-name">Post: Lightroom / Darktable</div>
-      <p class="gear-detail">Dark, contrasty edits. No over-processing. The shot does the work.</p>
-    </div>
-  </div>
-</section>
 
 <section class="contact" id="contact">
   <div class="contact-inner">
@@ -473,10 +451,8 @@
     <p class="contact-text reveal">Collaborations, commissions, or just someone who wants to talk about light and shadow — I'm open to all of it.</p>
     <a href="/cdn-cgi/l/email-protection#10697f656250757d71797c3e737f7d" class="contact-email reveal"><span class="__cf_email__" data-cfemail="4b12041e190b0e060a020765080406">[email&#160;protected]</span></a>
     <div class="contact-socials reveal">
-      <a href="#" class="social-link">Instagram</a>
-      <a href="#" class="social-link">Behance</a>
-      <a href="#" class="social-link">LinkedIn</a>
-      <a href="#" class="social-link">500px</a>
+      <a href="exceptionalstudio211@gmail.com" class="social-link">EMail</a>
+      <a href="https://www.linkedin.com/in/swagot-saikia-4441303b4/" class="social-link">LinkedIn</a>
     </div>
   </div>
 </section>
@@ -517,7 +493,7 @@
   // Scroll reveal
   const obs = new IntersectionObserver(entries => {
     entries.forEach((e,i) => { if(e.isIntersecting) setTimeout(()=>e.target.classList.add('visible'),i*80); });
-  }, { threshold: 0.1 });
+  }, { threshold: 0.05, rootMargin: '0px 0px -40px 0px' });
   document.querySelectorAll('.reveal').forEach(el => obs.observe(el));
 
   // Gallery filter
